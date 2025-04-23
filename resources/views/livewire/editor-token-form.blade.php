@@ -25,6 +25,6 @@
     </flux:field>
 
     <div class="flex justify-end col-span-2">
-        <flux:button variant="primary">{{ __('Save') }}</flux:button>
+        <flux:button variant="primary" wire:click="save()">{{ __('Save') }}</flux:button>
     </div>
 </div>

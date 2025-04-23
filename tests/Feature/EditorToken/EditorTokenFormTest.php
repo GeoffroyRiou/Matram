@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use App\Livewire\EditorTokenForm;
+use App\Models\EditorToken;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 
 describe('EditorToken form', function () {
@@ -48,5 +50,34 @@ describe('EditorToken form', function () {
         ]);
 
     });
-    
-})->only();
+
+    it('throw a ModelNotFoundException when a unknow editor token id is passed as parameter', function () {
+        $user = User::factory()->create();
+
+        expect(fn () => Livewire::actingAs($user)
+            ->test(EditorTokenForm::class, ['editorTokenId' => 999])
+        )
+            ->toThrow(ModelNotFoundException::class);
+
+    });
+
+    it('correctly fills form when an editor token id is passed. ', function () {
+        $user = User::factory()->create();
+        $editorToken = EditorToken::create([
+            'user_id' => $user->id,
+            'icon' => 'icon',
+            'type' => 'type',
+            'name' => 'name',
+            'hasGlobalValue' => false,
+            'data' => [],
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(EditorTokenForm::class, ['editorTokenId' => $editorToken->id])
+            ->assertSet('icon', 'icon')
+            ->assertSet('type', 'type')
+            ->assertSet('name', 'name')
+            ->assertSet('hasGlobalValue', false);
+    });
+
+});

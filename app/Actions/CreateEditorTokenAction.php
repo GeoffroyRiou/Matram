@@ -11,7 +11,8 @@ class CreateEditorTokenAction
 {
     /**
      * Create a new editor token.
-     * @param array{name: string, type: string, icon: string, hasGlobalValue: bool} $data
+     *
+     * @param  array{name: string, type: string, icon: string, hasGlobalValue: bool}  $data
      * @return EditorToken<array<string, array<string, mixed>>>
      */
     public function execute(array $data, User $user): EditorToken

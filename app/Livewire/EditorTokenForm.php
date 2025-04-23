@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Actions\CreateEditorTokenAction;
 use App\Enums\EditorTokenIcons;
 use App\Enums\EditorTokenTypes;
+use App\Models\EditorToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 class EditorTokenForm extends Component
 {
+    public ?int $editorTokenId = null;
+
     public string $icon = '';
 
     public string $type = '';
@@ -19,6 +22,27 @@ class EditorTokenForm extends Component
     public string $name = '';
 
     public bool $hasGlobalValue = true;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $data = [];
+
+    public function mount(?int $editorTokenId = null): void
+    {
+        if (! $editorTokenId) {
+            return;
+        }
+
+        $editorToken = EditorToken::findOrFail($editorTokenId);
+        $this->editorTokenId = $editorTokenId;
+
+        $this->icon = $editorToken->icon;
+        $this->type = $editorToken->type;
+        $this->name = $editorToken->name;
+        $this->hasGlobalValue = $editorToken->hasGlobalValue;
+        $this->data = $editorToken->data;
+    }
 
     public function save(): void
     {
