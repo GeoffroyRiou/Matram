@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @template TItem
  *
  * @property-read int $id
  * @property-read string $user_id
@@ -13,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read string $icon
  * @property-read string $type
  * @property-read bool $hasGlobalValue
- * @property-read  array<string, TItem> $data
+ * @property-read  array<string, array<string, mixed>> $data
  * @property-read string $created_at
  * @property-read string $updated_at
  */

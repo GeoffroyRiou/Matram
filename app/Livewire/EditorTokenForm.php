@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Actions\CreateEditorTokenAction;
+use App\Actions\UpdateEditorTokenAction;
 use App\Enums\EditorTokenIcons;
 use App\Enums\EditorTokenTypes;
 use App\Models\EditorToken;
@@ -57,15 +58,26 @@ class EditorTokenForm extends Component
          */
         $user = Auth::user();
 
-        (new CreateEditorTokenAction)->execute([
-            'icon' => $this->icon,
-            'type' => $this->type,
-            'name' => $this->name,
-            'hasGlobalValue' => $this->hasGlobalValue,
-            'data' => [],
-        ], $user);
+        if (! empty($this->editorTokenId)) {
+            $editorToken = EditorToken::findOrFail($this->editorTokenId);
+            (new UpdateEditorTokenAction)->execute($editorToken, [
+                'icon' => $this->icon,
+                'type' => $this->type,
+                'name' => $this->name,
+                'hasGlobalValue' => $this->hasGlobalValue,
+                'data' => [],
+            ]);
+        } else {
+            (new CreateEditorTokenAction)->execute([
+                'icon' => $this->icon,
+                'type' => $this->type,
+                'name' => $this->name,
+                'hasGlobalValue' => $this->hasGlobalValue,
+                'data' => [],
+            ], $user);
 
-        $this->dispatch('editor-token-created');
+            $this->dispatch('editor-token-created');
+        }
     }
 
     public function render(): View

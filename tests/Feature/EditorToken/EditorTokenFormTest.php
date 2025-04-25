@@ -61,7 +61,7 @@ describe('EditorToken form', function () {
 
     });
 
-    it('correctly fills form when an editor token id is passed. ', function () {
+    it('correctly fills form when an editor token id is passed. And saves correct values at update', function () {
         $user = User::factory()->create();
         $editorToken = EditorToken::create([
             'user_id' => $user->id,
@@ -77,7 +77,29 @@ describe('EditorToken form', function () {
             ->assertSet('icon', 'icon')
             ->assertSet('type', 'type')
             ->assertSet('name', 'name')
-            ->assertSet('hasGlobalValue', false);
+            ->assertSet('hasGlobalValue', false)
+            ->set('icon', 'newIcon')
+            ->set('type', 'newType')
+            ->set('name', 'newName')
+            ->set('hasGlobalValue', true)
+            ->call('save');
+
+        $editorToken->refresh();
+        $this->assertDatabaseHas('editor_tokens', [
+            'icon' => 'newIcon',
+            'type' => 'newType',
+            'name' => 'newName',
+            'user_id' => $user->id,
+            'hasGlobalValue' => true,
+        ]);
+        $this->assertDatabaseMissing('editor_tokens', [
+            'icon' => 'icon',
+            'type' => 'type',
+            'name' => 'name',
+            'user_id' => $user->id,
+            'hasGlobalValue' => false,
+        ]);
+
     });
 
-});
+})->only();
